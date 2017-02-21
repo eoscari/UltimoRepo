@@ -13,40 +13,40 @@ namespace Trabajo_final {
     public partial class ABMFacturaReal {
         
         /// <summary>
-        /// Control ErrorMessage.
+        /// Control PanelError.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ErrorMessage;
+        protected global::System.Web.UI.WebControls.Panel PanelError;
         
         /// <summary>
-        /// Control SuccessMessage.
+        /// Control lblMessageError.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal SuccessMessage;
+        protected global::System.Web.UI.WebControls.Label lblMessageError;
         
         /// <summary>
-        /// Control idlabelFactura.
+        /// Control InfoPanel.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label idlabelFactura;
+        protected global::System.Web.UI.WebControls.Panel InfoPanel;
         
         /// <summary>
-        /// Control idFactura.
+        /// Control lblMessageSuccess.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox idFactura;
+        protected global::System.Web.UI.WebControls.Label lblMessageSuccess;
         
         /// <summary>
         /// Control labelFechaEmi.

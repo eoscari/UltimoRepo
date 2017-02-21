@@ -9,124 +9,341 @@ namespace Trabajo_final.App_Start
 {
     public class ManejoFacturaReal
     {
-        private int TR = 180;
+        //ATRIBUTOS
         private FileStream fs;
-        private BinaryWriter bw;
-        private BinaryReader br;
-        private int nregs;
+        private StreamReader lectura;
+        private StreamWriter sw, escritura, eliminados;
+        FileInfo info;
+        bool encontrado;
+        private string cadena;
+        private int idfactura = 0;
+        string[] campos;
 
-        public ManejoFacturaReal(string Nom)
+        //CONSTRUCTOR
+        public ManejoFacturaReal(string fichero, string eliminado)
         {
-            AbrirFichero(Nom);
-        }
-        public void AbrirFichero(string fichero)
-        {
-            if (Directory.Exists(fichero))
-                throw new IOException(Path.GetFileName(fichero) + " no es un fichero.");
-            this.fs = new FileStream(fichero, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            this.bw = new BinaryWriter(fs);
-            this.br = new BinaryReader(fs);
-            this.nregs = (int)Math.Ceiling((double)fs.Length / (double)this.TR);
-        }
-
-        public void CerrarFichero()
-        {
-            if(fs != null && bw != null && br != null)
-            {
-                fs.Close(); bw.Close(); br.Close();
-            }            
+            escritura = File.AppendText(fichero);
+            eliminados = File.AppendText(eliminado);
+            info = new FileInfo(fichero);
+            eliminados.Close();
+            escritura.Close();
         }
 
-        public bool EscribirRegistro(int i, FacturaReal facturaReal)
+        public bool BuscarRegistro(string fichero, string idFactura)
         {
+            encontrado = false;
             try
             {
-                if (i >= 0 && i <= nregs)
+                lectura = File.OpenText(fichero);
+                //Console.Write("Ingrese su nombre de usuario: ");
+                //usuario = Console.ReadLine();
+                cadena = lectura.ReadLine();
+                //Buscamos para ver si existe el usuario
+                while (cadena != null)
                 {
-                    if (facturaReal.Tamaño + 4 > TR)
+                    campos = cadena.Split('-');
+                    if (campos[1].Trim().Equals(idFactura))
                     {
-                        Console.WriteLine("Tamaño de registro excedido.");
-                        return false;
+                        encontrado = true;
+                        break;
+                    }
+                    cadena = lectura.ReadLine();
+                }
+                lectura.Close();
+                //escritura = File.AppendText("facturaReal.txt");
+                //if (encontrado == true)
+                //{
+
+                //    Console.Write("Usuario: " + campos[1]);
+                //    Console.Write("Estado: " + campos[2]);
+                //    campos[2] = "NL";
+                //    Console.Write("Nombre del Remitente :" + campos[3]);
+                //    Console.Write("Nombre del destinatario: ");
+                //    string destinatario = Console.ReadLine();
+                //    Console.Write("Cuerpo del mensaje: ");
+                //    string cuerpo = Console.ReadLine();
+                //    //Escribiendo los datos en el archivo
+                //    escritura.WriteLine(campos[0] + "- " + campos[1] + "- " + campos[2] + "- " + campos[3] + "- " + destinatario + "- " + cuerpo + "- " + campos[6]);
+                //    Console.WriteLine("*******************************");
+                //    Console.WriteLine("Cargado correctamente");
+                //    Console.WriteLine("*******************************");
+                //}
+                //else
+                //{
+                //    Console.WriteLine("*************************************");
+                //    Console.WriteLine("No existe el usuario " + usuario);
+                //    Console.WriteLine("Desea Ingresa otro nombre de usuario? ");
+
+                //}
+                //escritura.Close();
+                return encontrado;
+            }
+            catch (FileNotFoundException fn)
+            {
+                fn.Message.ToString();
+                return false;
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+                return false;
+            }
+            finally
+            {
+                lectura.Close();
+                escritura.Close();
+            }
+        }
+
+        //Creando el método bajas
+        public void Eliminar(string ficheo, string eliminado, string idFactura)
+        {
+            encontrado = false;
+            try
+            {
+                lectura = File.OpenText(ficheo);
+                eliminados = File.CreateText(eliminado);
+                //Console.WriteLine("Ingrese su nombre de usuario: ");
+                //usuario = Console.ReadLine();
+                //usuario = usuario.ToUpper();
+                string cadena = lectura.ReadLine();
+                while (cadena != null)
+                {
+                    campos = cadena.Split('-');
+                    if (campos[1].Trim().Equals(idFactura))
+                    {
+                        //encontrado = true;
+                        //Console.WriteLine("******************************");
+                        //Console.WriteLine("Dirección del Remitente : " + campos[2]);
+                        //Console.WriteLine("Dirección del destinatario : " + campos[3]);
+                        //Console.WriteLine("Cuerpo del mensaje : " + campos[4]);
+                        //Console.WriteLine("******************************");
+                        //Console.WriteLine("Realmente deseas eliminarlo (SI/NO)?...");
+                        //respuesta = Console.ReadLine();
+                        //respuesta = respuesta.ToUpper();
+
+                        //if (!respuesta.Equals("SI"))
+                        //{
+                        //    eliminados.WriteLine(cadena);
+                        //}
                     }
                     else
                     {
-                        bw.BaseStream.Seek(i * this.TR, SeekOrigin.Begin);
-                        bw.Write(facturaReal.SGIdFactura);
-                        bw.Write(facturaReal.SGIdCheque);
-                        bw.Write(facturaReal.SGIdNota);
-                        bw.Write(facturaReal.SGDestinatario);
-                        bw.Write(facturaReal.SGModo);
-                        bw.Write(facturaReal.SGMoneda);
-                        bw.Write(facturaReal.SGMonto);
-                        bw.Write(facturaReal.SGOriginante);
-                        bw.Write(facturaReal.SGTipo);
-                        bw.Write(Convert.ToString(facturaReal.SGFechaMov));
-                        bw.Write(Convert.ToString(facturaReal.SGFechaEmi));
-                        return true;
+                        eliminados.WriteLine(cadena);
                     }
+                    cadena = lectura.ReadLine();
                 }
-                else { return false; }
-            }
-            catch (IOException e) {
-                CerrarFichero();
-                Console.WriteLine(e.Message);
-                return false;
-            }catch(Exception ex)
-            {
-                CerrarFichero();
-                return false;
-            }
-        }
-        public bool AgregarRegistro(FacturaReal factura)
-        {
-            if (EscribirRegistro(this.nregs, factura))
-            {
-                this.nregs++;
-                return true;
-            }
 
-            return false;
-        }
-
-        public int NumReg()
-        {
-            return this.nregs;
-        }
-
-        public FacturaReal LeerRegistro(int i)//lee registro mandandole la posicion en el fichero
-        {
-            try
-            {
-                if (i >= 0 && i < NumReg())
+                if (encontrado == false)
                 {
-                    br.BaseStream.Seek(i * this.TR, SeekOrigin.Begin);
-                    int idFactura = br.ReadInt32();
-                    DateTime fechaEmision = Convert.ToDateTime(br.ReadString());
-                    DateTime fechaMovimiento = Convert.ToDateTime(br.ReadString());
-                    string Tipo = br.ReadString();
-                    double Monto = br.ReadDouble();
-                    string Moneda = br.ReadString();
-                    string Modo = br.ReadString();
-                    int idNota = br.ReadInt32();
-                    int idCheque = br.ReadInt32();
-                    string destinatario = br.ReadString();
-                    string originante = br.ReadString();                
-
-                    return (new FacturaReal(idFactura, Convert.ToDateTime(fechaEmision), Convert.ToDateTime(fechaMovimiento), Tipo, Monto, Moneda, Modo, idNota, idCheque, destinatario, originante));
+                    Console.WriteLine("*************************");
+                    Console.WriteLine("El usuario no se encuentra en la BD");
+                    Console.WriteLine("*************************");
                 }
-                else { return null; }
+                //else if (respuesta.Equals("SI"))
+                //{
+                //    Console.WriteLine("**************************");
+                //    Console.WriteLine("*** Artículo eliminado ***");
+                //    Console.WriteLine("**************************");
+                //}
+                else
+                {
+                    Console.WriteLine("******************************************");
+                    Console.WriteLine("*** Operación de eliminación cancelada ***");
+                    Console.WriteLine("******************************************");
+                }
+                lectura.Close();
+                eliminados.Close();
+
             }
-            catch (IOException e) { CerrarFichero(); return null; }
+            catch (FileNotFoundException fn)
+            {
+                Console.WriteLine("*************************");
+                Console.WriteLine("Error!! " + fn.Message);
+                Console.WriteLine("*************************");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("*************************");
+                Console.WriteLine("Error!! " + e.Message);
+                Console.WriteLine("*************************");
+            }
+            finally
+            {
+                lectura.Close();
+                escritura.Close();
+            }
         }
 
-        public bool ModificarReg(int pos)
+
+        //Creando consultas de bandeja de entrada
+        public bool EscribirRegistro(FacturaReal factura, int idfactura, string fichero)
         {
+            encontrado = false;
             try
             {
-                FacturaReal nuevaFactura = LeerRegistro(pos);
-                EscribirRegistro(pos, nuevaFactura); return true;
+                lectura = File.OpenText(fichero);
+                cadena = lectura.ReadLine();             
+                while (cadena != null)
+                {
+                    campos = cadena.Split(';');
+                    if (Convert.ToInt32(campos[1]).Equals(idfactura))
+                    {
+                        encontrado = true;                    
+                        break;
+                    }
+                    cadena = lectura.ReadLine();                   
+                }
+                lectura.Close();
+                escritura = File.AppendText(fichero);
+                if (encontrado != true)
+                {
+                    string idFactura = Convert.ToString(factura.SGIdFactura);
+                    string emisionFecha = Convert.ToString(factura.SGFechaEmi);
+                    string movimientoFecha = Convert.ToString(factura.SGFechaMov);
+                    string tipo = Convert.ToString(factura.SGTipo);
+                    string monto = Convert.ToString(factura.SGMonto);
+                    string moneda = Convert.ToString(factura.SGMoneda);
+                    string modo = Convert.ToString(factura.SGModo);
+                    string idNota = Convert.ToString(factura.SGIdNota);
+                    string idCheque = Convert.ToString(factura.SGIdCheque);
+                    string destinatario = Convert.ToString(factura.SGDestinatario);
+                    string originante = Convert.ToString(factura.SGOriginante);
+                    escritura.WriteLine(idFactura + ";" + emisionFecha + ";" + movimientoFecha + ";" + tipo + ";" + monto + ";" + moneda + ";" + modo + ";" + idNota + ";" + idCheque + ";" + destinatario + ";" + originante);
+                    //numFactura, EmisionFecha, MovimientoFecha, tipo, monto, moneda, modo, idNota, idCheque, destinatario, originante
+                }
+                escritura.Close();
+                return encontrado;
             }
-            catch (IOException e) { CerrarFichero(); return false; }
+            catch (FileNotFoundException fn)
+            {
+                fn.Message.ToString();
+                return false;
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();
+                return false;
+            }
+            finally
+            {
+                lectura.Close();
+            }
+        }
+
+        //Creando consultas de bandeja de eliminados
+        //public void LeerEliminado()
+        //{
+        //    encontrado = false;
+        //    try
+        //    {
+        //        lectura = File.OpenText("eliminados.txt");
+        //        Console.Write("Ingrese su nombre de usuario: ");
+        //        usuario = Console.ReadLine();
+        //        usuario.ToUpper();
+        //        cadena = lectura.ReadLine();
+        //        while (cadena != null)
+        //        {
+        //            campos = cadena.Split('-');
+        //            if (campos[1].Trim().Equals(usuario))
+        //            {
+        //                encontrado = true;
+        //                Console.WriteLine("******************************");
+        //                Console.WriteLine("*****Datos encontrados *****");
+        //                Console.WriteLine();
+        //                Console.WriteLine("Dirección del remitente : " + campos[3]);
+        //                Console.WriteLine("Dirección del destinatario : " + campos[4]);
+        //                Console.WriteLine("Cuerpo del mensaje : " + campos[5]);
+        //                Console.WriteLine();
+        //                Console.WriteLine("******************************");
+        //            }
+        //            cadena = lectura.ReadLine();
+        //        }
+        //        if (encontrado == false)
+        //        {
+        //            Console.WriteLine("******************************************");
+        //            Console.WriteLine("*** No hay artículos con ese código " + usuario + " ***");
+        //            Console.WriteLine("******************************************");
+        //        }
+        //        lectura.Close();
+        //    }
+        //    catch (FileNotFoundException fn)
+        //    {
+        //        Console.WriteLine("*************************");
+        //        Console.WriteLine("Error!! " + fn.Message);
+        //        Console.WriteLine("*************************");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine("*************************");
+        //        Console.WriteLine("Error!! " + e.Message);
+        //        Console.WriteLine("*************************");
+        //    }
+        //    finally
+        //    {
+        //        lectura.Close();
+        //    }
+        //}
+
+        //Creando el método consulta general
+       public int return_ultima_posicion(int idfactura)
+        {
+            return Convert.ToInt32(info.Length);
+        }
+
+        public void consultamails()
+        {
+            encontrado = false;
+            try
+            {
+                lectura = File.OpenText("mails.txt");
+                cadena = lectura.ReadLine();
+                while (cadena != null)
+                {
+                    encontrado = true;
+                    campos = cadena.Split('-');
+                    Console.WriteLine("******************************");
+                    Console.WriteLine("*****Datos encontrados *****");
+                    Console.WriteLine();
+                    Console.WriteLine("Fecha : " + campos[0].Trim());
+                    Console.WriteLine("Usuario : " + campos[1].Trim());
+                    Console.WriteLine("Estado : " + campos[2].Trim());
+                    Console.WriteLine("Dirección del remitente : " + campos[3].Trim());
+                    Console.WriteLine("Dirección del destinatario : " + campos[4].Trim());
+                    Console.WriteLine("Cuerpo del mensaje : " + campos[5].Trim());
+                    Console.WriteLine();
+                    Console.WriteLine("******************************");
+                    cadena = lectura.ReadLine();
+                }
+                if (encontrado == false)
+                {
+                    Console.WriteLine("********************************");
+                    Console.WriteLine("No artículos en la base de datos");
+                    Console.WriteLine("********************************");
+                }
+                lectura.Close();
+            }
+            catch (FileNotFoundException fn)
+            {
+                fn.Message.ToString();
+            }
+            catch (Exception e)
+            {
+                e.Message.ToString();          
+            }
+            finally
+            {
+                lectura.Close();
+            }
+        }
+
+        public String PasarLinea(FacturaReal facturaReal)
+        {
+            String l = "";
+            l = l + facturaReal.SGIdFactura + "-" + facturaReal.SGFechaEmi + "-" + facturaReal.SGFechaEmi + "-" + facturaReal.SGTipo + "-";
+            l = l + facturaReal.SGMonto + "-" + facturaReal.SGMoneda +"-" + facturaReal.SGModo + "-" + facturaReal;
+            //int IdFactura, DateTime fechaEmision, DateTime fechaMovimiento, string Tipo, Double Monto, string Moneda, string Modo, int IdNota, int IdCheque, string Destinatario, string Originante
+            return l;
         }
     }
 }

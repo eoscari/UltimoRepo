@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trabajo_final", "Trabajo_fi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcial CSharp", "..\Parcial CSharp\Parcial CSharp\Parcial CSharp.csproj", "{7A69B181-F325-4DD1-BE4A-9277D2FFE396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EJE7", "D:\Parcial\Actividad5\EJE7.csproj", "{F69AD145-EB47-4DC6-B331-AA385A9A83DE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{7A69B181-F325-4DD1-BE4A-9277D2FFE396}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A69B181-F325-4DD1-BE4A-9277D2FFE396}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A69B181-F325-4DD1-BE4A-9277D2FFE396}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F69AD145-EB47-4DC6-B331-AA385A9A83DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F69AD145-EB47-4DC6-B331-AA385A9A83DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F69AD145-EB47-4DC6-B331-AA385A9A83DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F69AD145-EB47-4DC6-B331-AA385A9A83DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

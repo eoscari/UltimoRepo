@@ -15,32 +15,33 @@ namespace Trabajo_final
         ManejoFacturaReal lista;
         public List<FacturaReal> ListaMostrar { get; set; }
         FacturaReal facturaReal;
+        private StreamReader lectura;
+        private StreamWriter sw, escritura, eliminados;
+        string cadena;
+        string[] campos;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 ListaMostrar = new List<FacturaReal>();
-                lista = new ManejoFacturaReal(Server.MapPath(@"~/Archivos/FacturaReal.bin"));
-                for (int i = 0; i < lista.NumReg(); i++)
+                lista = new ManejoFacturaReal(Server.MapPath(@"~/Archivos/FacturaReal.bin"), Server.MapPath(@"~/Archivos/Eliminados.bin"));
+                lectura = File.OpenText(Server.MapPath(@"~/Archivos/FacturaReal.bin"));
+                cadena = lectura.ReadLine();
+                while(cadena != null)
                 {
-                    facturaReal = lista.LeerRegistro(i);
-                    int IdFactura = facturaReal.SGIdFactura;
-                    DateTime fechaEmision = facturaReal.SGFechaEmi;
-                    DateTime fechaMovimiento = facturaReal.SGFechaMov;
-                    string Tipo = facturaReal.SGTipo;
-                    double Monto = facturaReal.SGMonto;
-                    string Modo = facturaReal.SGModo;
-                    int IdNota = facturaReal.SGIdNota;
-                    int IdCheque = facturaReal.SGIdCheque;
-                    string Destinatario = facturaReal.SGDestinatario;
-                    string Originante = facturaReal.SGOriginante;
-                    ListaMostrar.Add(new FacturaReal { IdFactura = facturaReal.IdFactura, fechaEmision = facturaReal.fechaEmision, fechaMovimiento = facturaReal.fechaMovimiento, Tipo = facturaReal.Tipo, Monto = facturaReal.Monto, Moneda = facturaReal.Moneda, Modo = facturaReal.Modo, IdNota = facturaReal.IdNota, IdCheque = facturaReal.IdCheque, Destinatario = facturaReal.Destinatario, Originante = facturaReal.Originante });
-                    //int IdFactura, DateTime fechaEmsion, DateTime fechaMovimiento, string Tipo, Double Monto, string Moneda, string Modo, int IdNota, int IdCheque, string Destinatario, string Originante                
+                    campos = cadena.Split('-');
+                    for(int i=0; i < campos.Length; i++)
+                    {
+                        //int idFactura = Convert.ToInt32(campos[0]);
+                    }
+
+                    //ListaMostrar.Add(new FacturaReal { IdFactura = idFactura, fechaEmision = facturaReal.fechaEmision, fechaMovimiento = facturaReal.fechaMovimiento, Tipo = facturaReal.Tipo, Monto = facturaReal.Monto, Moneda = facturaReal.Moneda, Modo = facturaReal.Modo, IdNota = facturaReal.IdNota, IdCheque = facturaReal.IdCheque, Destinatario = facturaReal.Destinatario, Originante = facturaReal.Originante });                    
                 }
-            }
-            catch (IOException er) { lista.CerrarFichero(); ErrorMessage.Text = er.Message; }
-            catch (Exception ex) { lista.CerrarFichero(); ErrorMessage.Text = ex.Message; }
-            finally { lista.CerrarFichero(); }
+            //}
+            //catch (IOException er) { lista.CerrarFichero(); ErrorMessage.Text = er.Message; }
+            //catch (Exception ex) { lista.CerrarFichero(); ErrorMessage.Text = ex.Message; }
+            //finally { lista.CerrarFichero(); }
             //finally { lista.CerrarFichero(); }
         }
     }

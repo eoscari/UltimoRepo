@@ -12,22 +12,24 @@ namespace Trabajo_final
     public partial class ABMFacturaReal : System.Web.UI.Page
     {
         private ManejoFacturaReal listaCuenta;
+        string ficheroFactura;
+        string ficheroEliminados;
+        int id = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            listaCuenta = new ManejoFacturaReal(Server.MapPath(@"~/Archivos/FacturaReal.bin"));
+            ficheroFactura = Server.MapPath(@"~/Archivos/FacturaReal.txt");
+            ficheroEliminados = Server.MapPath(@"~/Archivos/facturaRealEliminados.txt");
+            listaCuenta = new ManejoFacturaReal(ficheroFactura, ficheroEliminados);
             FechaEmision.Text = System.DateTime.Now.ToString("dd/MM/yyyy");
             FechaEmision.Enabled = false;
-            listaCuenta.CerrarFichero();
         }
 
         protected void Alta(object sender, EventArgs e)
         {
             try
             {
-                listaCuenta.AbrirFichero(Server.MapPath(@"~/Archivos/FacturaReal.bin"));
-
-                int numFactura = Convert.ToInt16(idFactura.Text);
+                int numFactura = listaCuenta.return_ultima_posicion(id);
                 FechaEmision.Text = System.DateTime.Now.ToString("dd/MM/yyyy");
                 DateTime EmisionFecha = Convert.ToDateTime(System.DateTime.Now.ToString("dd/MM/yyyy"));
                 DateTime MovimientoFecha = Convert.ToDateTime(FechaMovimiento.Text);
@@ -41,17 +43,18 @@ namespace Trabajo_final
                 string originante = Convert.ToString(Originante.Text);               
 
                 FacturaReal obj = new FacturaReal(numFactura, EmisionFecha, MovimientoFecha, tipo, monto, moneda, modo, idNota, idCheque, destinatario, originante);
-                if (listaCuenta.AgregarRegistro(obj))
+                if (!listaCuenta.EscribirRegistro(obj, numFactura, ficheroFactura))
                 {
-                    SuccessMessage.Text = "Se han Guardado los Datos Correctamente";
+                    lblMessageSuccess.Text = "Se guardaron los Datos Correctamente";
+                    lblMessageError.Text = "";
+                    InfoPanel.Visible = true;
                 }
                 else
                 {
-                    ErrorMessage.Text = "Hubo un Error al Guardar, intentelo de nuevo";
-                    SuccessMessage.Text = "";
+                    lblMessageError.Text = "Hubo un Error al Guardar, intentelo de nuevo";
+                    lblMessageSuccess.Text = "";
                 }
                 //numeroReg = lista.NumReg();
-                listaCuenta.CerrarFichero();
 
 
             }

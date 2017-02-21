@@ -98,6 +98,8 @@ namespace Trabajo_final_csharp.App_Start
             return fe.ToString("dd/MM/yyyy");
         }
         public int Tamaño
-        { get { return (8+ FormatoFecha(SGFechaEmi).Length * 2+ FormatoFecha(SGFechaMov).Length * 2+SGTipo.Length*2+16+SGMoneda.Length*2+SGModo.Length*2+8+8+SGDestinatario.Length*2+SGOriginante.Length*2); } }
+        {
+            get { return (8 + FormatoFecha(SGFechaEmi).Length * 2 + FormatoFecha(SGFechaMov).Length * 2 + SGTipo.Length*2 + 16 + SGMoneda.Length*2 + SGModo.Length*2 + 8 + 8 + SGDestinatario.Length*2 + SGOriginante.Length*2); }
+        }
     }
 }

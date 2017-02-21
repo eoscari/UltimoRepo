@@ -1,26 +1,32 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AltaFacturaReal.aspx.cs" Inherits="Trabajo_final.ABMFacturaReal" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <p class="text-danger">
+    <%--<p class="text-danger">
         <asp:Literal runat="server" ID="ErrorMessage" />
-    </p>
-
-    <p class="text-success">
+    </p>--%>
+    <%--<div class="alert alert-warning alert-dismissible fade in" role="alert"> 
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button> <strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
+    </div>--%>
+        <asp:Panel ID="PanelError" runat="server" class="alert alert-success alert-dismissable" Visible="False">
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+             <asp:Label ID="lblMessageError" runat="server" Text=""></asp:Label>
+        </asp:Panel>
+        <asp:Panel ID="InfoPanel" runat="server" class="alert alert-success alert-dismissable" Visible="False">
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+             <asp:Label ID="lblMessageSuccess" runat="server" Text=""></asp:Label>
+        </asp:Panel>
+    <%--<p class="alert alert-success alert-dismissible fade in">
         <asp:Literal runat="server" ID="SuccessMessage" />
-    </p>
+    </p>--%>
     <div class="form-horizontal" role="form">
         <br />
         <h4 id="idlabelFactura">Nueva Factura.</h4>
         <hr />
-        <asp:ValidationSummary runat="server" CssClass="text-danger" />   
-        <div class="form-group col-md-6">
-            <asp:Label runat="server" AssociatedControlID="idlabelFactura" CssClass="col-md-2 control-label" ID="idlabelFactura">Núm de factura</asp:Label>
-            <div class="col-md-10">
-                <asp:TextBox runat="server" ID="idFactura" CssClass="form-control" />
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="idFactura"
-                    CssClass="text-danger" ErrorMessage="Se requiere el id de factura" />
-            </div>
-        </div>   
-          
         <div class="form-group col-md-6">
             <asp:Label runat="server" AssociatedControlID="labelFechaEmi" CssClass="col-md-2 control-label" ID="labelFechaEmi">Fecha Emisión</asp:Label>
             <div class="col-md-10">

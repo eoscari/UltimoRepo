@@ -1,0 +1,1 @@
+0;20/02/2017 0:00:00;12/02/2017 0:00:00;Pago;1500;Dolar;Efectivo;20;1;Esteban;Florencia

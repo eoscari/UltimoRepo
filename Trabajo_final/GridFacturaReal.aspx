@@ -27,8 +27,8 @@
             <% foreach (var item in ListaMostrar) {%>
             <tr>
                 <td><%= item.IdFactura %></td>
-                <td><%= item.fechaEmision.ToString() %></td>
-                <td><%= item.fechaMovimiento.ToString() %></td>
+                <td><%= item.fechaEmision.ToString("dd/MM/yyyy") %></td>
+                <td><%= item.fechaMovimiento.ToString("dd/MM/yyyy") %></td>
                 <td><%= item.Tipo %></td>
                 <td><%= item.Monto %></td>
                 <td><%= item.Modo %></td>
