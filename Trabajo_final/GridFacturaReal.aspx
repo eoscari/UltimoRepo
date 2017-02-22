@@ -11,9 +11,9 @@
     <table class="table table-hover">  
         <thead>      
             <tr>
-                <th>IdFactura</th>
-                <th>fechaEmision</th>
-                <th>fechaMovimiento</th>
+                <th>#</th>
+                <th>Emision</th>
+                <th>Movimiento</th>
                 <th>Tipo</th>
                 <th>Monto</th>
                 <th>Modo</th>
@@ -21,13 +21,18 @@
                 <th>IdCheque</th>
                 <th>Destiantario</th>
                 <th>Originante</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
             <% foreach (var item in ListaMostrar) {%>
             <tr>
-                <td><%= item.IdFactura %></td>
-                <td><%= item.fechaEmision.ToString("dd/MM/yyyy") %></td>
+                <td>
+                    <asp:Label ID="idFactura" runat="server" CommandName="Eliminar" CommandArgument='<%= item.IdFactura %>' />
+                </td>
+                <td><%= item.fechaEmision.ToString("dd/MM/yyyy") %>
+                    <asp:Label ID="Label1" runat="server" TabIndex="1" />
+                </td>
                 <td><%= item.fechaMovimiento.ToString("dd/MM/yyyy") %></td>
                 <td><%= item.Tipo %></td>
                 <td><%= item.Monto %></td>
@@ -37,7 +42,9 @@
                 <td><%= item.Destinatario %></td>
                 <td><%= item.Originante %></td>
                 <td>
-                    <button class="btn btn-sm btn-warning glyphicon glyphicon-pencil"></button>
+                    <asp:Button runat="server" OnClick="Detalle" Title="Detalle" CssClass="btn btn-sm btn-success glyphicon glyphicon-list-alt" ID="btnSuccess" />
+                    <asp:Button runat="server" OnClick="Editar" Title="Editar" CssClass="btn btn-sm btn-warning glyphicon glyphicon-pencil" ID="btnModificar" />
+                    <asp:Button runat="server" OnClick="Eliminar" Title="Eliminar" CssClass="btn btn-sm btn-danger glyphicon glyphicon-trash" ID="btnEliminar" />                
                 </td>
             </tr>
             <% }%>

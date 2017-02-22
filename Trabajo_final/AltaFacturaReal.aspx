@@ -8,7 +8,7 @@
             <span aria-hidden="true">×</span>
         </button> <strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
     </div>--%>
-        <asp:Panel ID="PanelError" runat="server" class="alert alert-success alert-dismissable" Visible="False">
+        <asp:Panel ID="PanelError" runat="server" class="alert alert-danger alert-dismissable" Visible="False">
              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button>

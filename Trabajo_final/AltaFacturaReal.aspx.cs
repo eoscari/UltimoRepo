@@ -29,7 +29,7 @@ namespace Trabajo_final
         {
             try
             {
-                int numFactura = listaCuenta.return_ultima_posicion(id);
+                int numFactura = listaCuenta.cuenta_lineas(id, Server.MapPath(@"~/Archivos/FacturaReal.txt")) + 1;
                 FechaEmision.Text = System.DateTime.Now.ToString("dd/MM/yyyy");
                 DateTime EmisionFecha = Convert.ToDateTime(System.DateTime.Now.ToString("dd/MM/yyyy"));
                 DateTime MovimientoFecha = Convert.ToDateTime(FechaMovimiento.Text);
@@ -37,30 +37,33 @@ namespace Trabajo_final
                 double monto = Convert.ToDouble(Monto.Text);
                 string moneda = Convert.ToString(Moneda.Text);
                 string modo = Convert.ToString(ModoPago.Text);
-                int idNota = Convert.ToInt16(Nota.Text);
-                int idCheque = Convert.ToInt16(Cheque.Text);
+                int idNota = Convert.ToInt32(Nota.Text);
+                int idCheque = Convert.ToInt32(Cheque.Text);
                 string destinatario = Convert.ToString(Destinatario.Text);
                 string originante = Convert.ToString(Originante.Text);               
 
                 FacturaReal obj = new FacturaReal(numFactura, EmisionFecha, MovimientoFecha, tipo, monto, moneda, modo, idNota, idCheque, destinatario, originante);
-                if (!listaCuenta.EscribirRegistro(obj, numFactura, ficheroFactura))
+                if (!listaCuenta.EscribirRegistro(obj, idCheque, idNota, ficheroFactura))
                 {
-                    lblMessageSuccess.Text = "Se guardaron los Datos Correctamente";
+                    lblMessageSuccess.Text = "Se guardaron los Datos Correctamente.";
                     lblMessageError.Text = "";
                     InfoPanel.Visible = true;
+                    PanelError.Visible = false;
                 }
                 else
                 {
-                    lblMessageError.Text = "Hubo un Error al Guardar, intentelo de nuevo";
+                    lblMessageError.Text = "Ya existe un registro con los mismos datos.";
                     lblMessageSuccess.Text = "";
+                    PanelError.Visible = true;
+                    InfoPanel.Visible = false;
                 }
                 //numeroReg = lista.NumReg();
 
 
             }
-            catch (System.IO.IOException er) { }
-
-
+            catch (System.IO.IOException er) {
+                er.Message.ToString();
+            }           
         }
     }
 }

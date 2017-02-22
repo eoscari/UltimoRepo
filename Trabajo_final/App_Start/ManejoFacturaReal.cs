@@ -16,7 +16,6 @@ namespace Trabajo_final.App_Start
         FileInfo info;
         bool encontrado;
         private string cadena;
-        private int idfactura = 0;
         string[] campos;
 
         //CONSTRUCTOR
@@ -27,6 +26,21 @@ namespace Trabajo_final.App_Start
             info = new FileInfo(fichero);
             eliminados.Close();
             escritura.Close();
+        }
+        public int cuenta_lineas(int cont, string fichero)
+        {
+            //lectura = File.OpenText(fichero);
+            //cadena = lectura.ReadLine();
+            //while (cadena != null)
+            //{
+            //    cont++;
+            //    cadena = lectura.ReadLine();
+            //}
+            //lectura.Close();
+            //return cont;
+
+            int cantidad = File.ReadAllLines(fichero).Length;
+            return cantidad;
         }
 
         public bool BuscarRegistro(string fichero, string idFactura)
@@ -42,7 +56,7 @@ namespace Trabajo_final.App_Start
                 while (cadena != null)
                 {
                     campos = cadena.Split('-');
-                    if (campos[1].Trim().Equals(idFactura))
+                    if (campos[0].Trim().Equals(idFactura))
                     {
                         encontrado = true;
                         break;
@@ -177,22 +191,22 @@ namespace Trabajo_final.App_Start
 
 
         //Creando consultas de bandeja de entrada
-        public bool EscribirRegistro(FacturaReal factura, int idfactura, string fichero)
+        public bool EscribirRegistro(FacturaReal factura, int idcheque, int idnota,string fichero)
         {
             encontrado = false;
             try
             {
                 lectura = File.OpenText(fichero);
-                cadena = lectura.ReadLine();             
+                cadena = lectura.ReadLine();
                 while (cadena != null)
                 {
                     campos = cadena.Split(';');
-                    if (Convert.ToInt32(campos[1]).Equals(idfactura))
+                    if (Convert.ToInt32(campos[7]).Equals(idcheque) || Convert.ToInt32(campos[8]).Equals(idnota))
                     {
-                        encontrado = true;                    
+                        encontrado = true;
                         break;
                     }
-                    cadena = lectura.ReadLine();                   
+                    cadena = lectura.ReadLine();
                 }
                 lectura.Close();
                 escritura = File.AppendText(fichero);
@@ -227,6 +241,7 @@ namespace Trabajo_final.App_Start
             }
             finally
             {
+                //escritura.Close();
                 lectura.Close();
             }
         }
