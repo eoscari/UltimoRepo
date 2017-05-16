@@ -14,6 +14,7 @@ namespace Trabajo_final
     {
         ManejoFacturaReal lista;
         public List<FacturaReal> ListaMostrar { get; set; }
+        public List<FacturaReal> ListaDetalle { get; set; }
         FacturaReal facturaReal;
         private StreamReader lectura;
         private StreamWriter sw, escritura, eliminados;
@@ -22,38 +23,119 @@ namespace Trabajo_final
         protected void Detalle(object sender, EventArgs e)
         {
             
-           if( lista.BuscarRegistro(Server.MapPath(@"~/Archivos/FacturaReal.txt"), idFactura.Text))
-            {
-                SuccessMessage.Text = "Encontrado: "+ idFactura.Text;
-            }
-            else
-            {
-                ErrorMessage.Text = "No encontrado: "+ idFactura.Text;
-            }
+           //if( lista.BuscarRegistro(Server.MapPath(@"~/Archivos/FacturaReal.txt"), idFactura.Text))
+           // {
+           //     SuccessMessage.Text = "Encontrado: "+ idFactura.Text;
+           // }
+           // else
+           // {
+           //     ErrorMessage.Text = "No encontrado: "+ idFactura.Text;
+           // }
 
-        }
+        }      
 
         protected void Editar(object sender, EventArgs e)
         {
 
         }
 
-        protected void Eliminar(object sender, EventArgs e)
+        //Creando el método bajas
+        public void Eliminar(string idFactura)
         {
+            bool encontrado = false;
+            try
+            {
+                lista = new ManejoFacturaReal(Server.MapPath(@"~/Archivos/FacturaReal.txt"), Server.MapPath(@"~/Archivos/Eliminados.txt"));
+                lectura = File.OpenText(Server.MapPath(@"~/Archivos/FacturaReal.txt"));
+                eliminados = File.CreateText(Server.MapPath(@"~/Archivos/Eliminados.txt"));
+                string cadena = lectura.ReadLine();
+                while (cadena != null && encontrado == false)
+                {
+                    campos = cadena.Split(';');
+                    if (!lista.BuscarRegistro(idFactura))
+                    {
+                        encontrado = true;
+                        eliminados.WriteLine(cadena);
+                        lblMessageError.Text = "";
+                        lblMessageSuccess.Text = "Eliminado satisfactoriamente.";
+                        PanelError.Visible = false;
+                        InfoPanel.Visible = true;
+                        //carga_lista();
+                    }
+                    //else
+                    //{
+                        
+                    //}
+                    cadena = lectura.ReadLine();
+                }
 
+                //if (encontrado == false)
+                //{
+                //    Console.WriteLine("*************************");
+                //    Console.WriteLine("El usuario " + usuario + " no se encuentra en la BD");
+                //    Console.WriteLine("*************************");
+                //}
+                //else if (respuesta.Equals("SI"))
+                //{
+                //    Console.WriteLine("**************************");
+                //    Console.WriteLine("*** Artículo eliminado ***");
+                //    Console.WriteLine("**************************");
+                //}
+                //else
+                //{
+                //    Console.WriteLine("******************************************");
+                //    Console.WriteLine("*** Operación de eliminación cancelada ***");
+                //    Console.WriteLine("******************************************");
+                //}
+                lectura.Close();
+                eliminados.Close();
+                File.Delete(Server.MapPath(@"~/Archivos/FacturaReal.txt"));
+                File.Move(Server.MapPath(@"~/Archivos/Eliminados.txt"), Server.MapPath(@"~/Archivos/FacturaReal.txt"));
+
+            }
+            catch (FileNotFoundException fn)
+            {
+                Console.WriteLine("*************************");
+                Console.WriteLine("Error!! " + fn.Message);
+                Console.WriteLine("*************************");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("*************************");
+                Console.WriteLine("Error!! " + e.Message);
+                Console.WriteLine("*************************");
+            }
+            finally
+            {
+                lectura.Close();
+                //escritura.Close();
+            }
         }
 
         string[] campos;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            var _IdFactura = Request.QueryString["IdFactura"];
+            if ((_IdFactura ?? "") != "")
+            {
+                Eliminar(_IdFactura);
+            }
+
+            carga_lista();
+        }
+
+        private void carga_lista()
+        {
             try
             {
+                
+
                 ListaMostrar = new List<FacturaReal>();
                 lista = new ManejoFacturaReal(Server.MapPath(@"~/Archivos/FacturaReal.txt"), Server.MapPath(@"~/Archivos/Eliminados.txt"));
                 lectura = File.OpenText(Server.MapPath(@"~/Archivos/FacturaReal.txt"));
                 cadena = lectura.ReadLine();
-                while(cadena != null)
+                while (cadena != null)
                 {
                     campos = cadena.Split(';');
                     //for(int i=0; i < campos.Length; i++)
@@ -85,31 +167,25 @@ namespace Trabajo_final
                     });
                     cadena = lectura.ReadLine();
                 }
-            lectura.Close();
-                //ListaMostrar.Add(new FacturaReal { IdFactura = idFactura, fechaEmision = facturaReal.fechaEmision, fechaMovimiento = facturaReal.fechaMovimiento, Tipo = facturaReal.Tipo, 
-                //Monto = facturaReal.Monto, Moneda = facturaReal.Moneda, Modo = facturaReal.Modo, IdNota = facturaReal.IdNota, IdCheque = facturaReal.IdCheque, 
-                //Destinatario = facturaReal.Destinatario, Originante = facturaReal.Originante });                    
-                //}
-            }catch(FileNotFoundException fn)
+                lectura.Close();
+            }
+            catch (FileNotFoundException fn)
             {
                 fn.Message.ToString();
                 if (lectura != null)
                     lectura.Close();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ex.Message.ToString();
-                if(lectura != null)
+                if (lectura != null)
                     lectura.Close();
             }
             finally
             {
-                lectura.Close();
+                if (lectura != null)
+                    lectura.Close();
             }
-            //catch (IOException er) { lista.CerrarFichero(); ErrorMessage.Text = er.Message; }
-            //catch (Exception ex) { lista.CerrarFichero(); ErrorMessage.Text = ex.Message; }
-            //finally { lista.CerrarFichero(); }
-            //finally { lista.CerrarFichero(); }catch(FileNotFoundException exc) { }		ex.Message	"El proceso no puede obtener acceso al archivo 'c:\\users\\oscar\\documents\\visual studio 2015\\Projects\\Trabajo_final\\Trabajo_final\\Archivos\\FacturaReal.bin' porque está siendo utilizado en otro proceso."	string
-
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Trabajo_final.App_Start
         private StreamReader lectura;
         private StreamWriter sw, escritura, eliminados;
         FileInfo info;
+        string path { get; set; }
         bool encontrado;
         private string cadena;
         string[] campos;
@@ -21,6 +22,7 @@ namespace Trabajo_final.App_Start
         //CONSTRUCTOR
         public ManejoFacturaReal(string fichero, string eliminado)
         {
+            path = fichero;
             escritura = File.AppendText(fichero);
             eliminados = File.AppendText(eliminado);
             info = new FileInfo(fichero);
@@ -43,27 +45,29 @@ namespace Trabajo_final.App_Start
             return cantidad;
         }
 
-        public bool BuscarRegistro(string fichero, string idFactura)
+        public bool BuscarRegistro(string idFactura)
         {
             encontrado = false;
             try
             {
-                lectura = File.OpenText(fichero);
-                //Console.Write("Ingrese su nombre de usuario: ");
-                //usuario = Console.ReadLine();
-                cadena = lectura.ReadLine();
-                //Buscamos para ver si existe el usuario
-                while (cadena != null)
+                if(path != null)
                 {
-                    campos = cadena.Split('-');
-                    if (campos[0].Trim().Equals(idFactura))
-                    {
-                        encontrado = true;
-                        break;
-                    }
+                    lectura = File.OpenText(path);
                     cadena = lectura.ReadLine();
+                    //Buscamos para ver si existe el id
+                    while (cadena != null)
+                    {
+                        campos = cadena.Split(';');
+                        if (campos[0].Trim().Equals(idFactura))
+                        {
+                            encontrado = true;
+                            break;
+                        }
+                        cadena = lectura.ReadLine();
+                    }
+                    lectura.Close();
                 }
-                lectura.Close();
+                
                 //escritura = File.AppendText("facturaReal.txt");
                 //if (encontrado == true)
                 //{
@@ -110,12 +114,12 @@ namespace Trabajo_final.App_Start
         }
 
         //Creando el método bajas
-        public void Eliminar(string ficheo, string eliminado, string idFactura)
+        public void Eliminar(string fichero, string eliminado, string idFactura)
         {
             encontrado = false;
             try
             {
-                lectura = File.OpenText(ficheo);
+                lectura = File.OpenText(fichero);
                 eliminados = File.CreateText(eliminado);
                 //Console.WriteLine("Ingrese su nombre de usuario: ");
                 //usuario = Console.ReadLine();

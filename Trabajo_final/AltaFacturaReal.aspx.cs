@@ -57,9 +57,6 @@ namespace Trabajo_final
                     PanelError.Visible = true;
                     InfoPanel.Visible = false;
                 }
-                //numeroReg = lista.NumReg();
-
-
             }
             catch (System.IO.IOException er) {
                 er.Message.ToString();
